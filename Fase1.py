@@ -18,23 +18,23 @@ class Fase1:
         self.Xn = [0]*len(c)
         self.An = np.array(A)
         self.mB = np.eye(len(self.b))
-        self.z = len(b)
+        self.z = np.dot(self.Cb,self.Xb)
         
-        self.trobar_SBF()
+        self.es_optim()
         
 
-    def trobar_SBF(self):
+    def es_optim(self):
 
         mB_inv = np.linalg.inv(self.mB)
         Cb_mB_inv = np.dot(self.Cb, mB_inv)
         Cb_mB_inv_An = np.dot(Cb_mB_inv, self.An)
         r = self.Cn - Cb_mB_inv_An
-
+         
         if self.positius(r):
 
-            return 
-        
-        self.canviar_base(r)
+            self.resultat()
+        else:
+            self.canviar_base(r)
 
 
     def positius(self, r):
@@ -49,11 +49,12 @@ class Fase1:
         q = self.primer_negatiu(r)
         mB_inv = np.linalg.inv(self.mB)
         db = np.dot(-(mB_inv),self.trobar_Aq(q))
-
+        
+        rq= r[q]
         
         if self.positius(db):
 
-            return
+           print(1)
         
         o = self.calcular_0(db)
 
@@ -65,15 +66,47 @@ class Fase1:
         self.B[p] = entra
         self.N[q] = surt
 
-        self.N.sort()
-        
-        self.actualitzar(o, db, entra)
+        if self.funcio_objectiu[self.N[q]-1]!=0:
+            self.Cn[q] = self.funcio_objectiu[self.N[q]-1]
+        else:
+            self.Cn[q] = 0
 
-    def actualitzar(self, o, db, rq):
+        self.N.sort()
+        self.actualitzar(o, p, rq)
+
+    def actualitzar(self, o, p, rq):
+        
+        columna_entra = self.restriccions[:, self.B[p]-1]
+        self.mB[:, p]=columna_entra
+        
+        columnes_de_indexs =[]
+        for index in self.N:
+            columna = self.restriccions[:,index-1]
+            columnes_de_indexs.append(columna)
+            
+        self.An = np.column_stack(columnes_de_indexs)
+        
+        mB_inv = np.linalg.inv(self.mB)
+        self.Xb = np.dot(mB_inv,self.b)
         
         self.z = self.z + (o*rq)
         
-
+        if self.funcio_objectiu[self.B[p]-1]!=0:
+            self.Cb[p] = self.funcio_objectiu[self.B[p]-1]
+        else :
+            self.Cb[p] = 0
+        
+        self.Cn = []
+        for index in self.N:
+            if self.funcio_objectiu[index-1]!=0:
+                self.Cn.append(self.funcio_objectiu[index-1])
+            else :
+                self.Cn.append(0)
+        self.Cn = np.array(self.Cn)
+        
+        if self.positius(self.Xb):
+            
+           self.es_optim()
 
     def primer_negatiu(self,r):
 
@@ -86,18 +119,20 @@ class Fase1:
 
         Aq = []
 
-        for fila in self.restriccions:
+        for fila in self.An:
             Aq.append(fila[q])
 
-        return Aq
+        return np.array(Aq)
 
     def calcular_0(self,db):
         
         llista_min = []
 
         for i in range(len(self.b)):
-
-            llista_min.append(-self.b[i]/db[i])
+            
+            if db[i]<0:
+            
+                llista_min.append(-self.Xb[i]/db[i])
 
         minim = min(llista_min)
 
@@ -109,14 +144,21 @@ class Fase1:
         llista_min = []
 
         for i in range(len(self.b)):
-
-            llista_min.append(-self.b[i]/db[i])
+            
+            if db[i]<0:
+            
+                llista_min.append(-self.Xb[i]/db[i])
 
         minim = min(llista_min)
         p = llista_min.index(minim)
         
         return p
     
-
+    def resultat(self):
+        
+        print(self.z)
+        print(self.B)
+        print(self.N)
+        return
 
 Fase1([1, 1, 0],[4,2],[[1, 1, 1],[2, -1, 0]])
