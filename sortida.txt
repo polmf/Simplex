@@ -1,0 +1,3 @@
+Inici simplex primal amb regla de Bland
+Fase 1
+Fase 2

@@ -1,5 +1,7 @@
 import numpy as np
 
+
+    
 class Iteracions:
 
     def __init__(self, c, b, A, B, N):
@@ -52,7 +54,7 @@ class Iteracions:
         
         if self.positius(r): # si r és positiu
 
-            return 
+            return self.optim()
         
         else:
             self.canviar_base(r)
@@ -75,7 +77,7 @@ class Iteracions:
         
         if self.positius(db): # si db es positiu
 
-           print('DBF de descenso no acotada, Problema Lineal no acotado')
+            print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
         
         theta, p = self.calcular_0_p(db) # calculem el valor de la theta i lindex de la variable de sortida
 
@@ -130,7 +132,7 @@ class Iteracions:
         
         if self.positius(self.Xb):
             
-           self.es_optim()
+            self.es_optim()
 
     def primer_negatiu(self,r):
 
@@ -172,8 +174,8 @@ class Iteracions:
         
     def optim(self):
         
-        print(self.z)
-        print(self.B)
+        #print('z en fase 1: ', self.z)
+        #print('vB en fase 1: ', self.B)
         
         return self.z, self.B
 
@@ -181,6 +183,10 @@ class Iteracions:
 class Simplex:
     
     def __init__(self, c, b, A):
+        
+        with open('sortida.txt', 'w') as sortida:
+            
+            print('Inici simplex primal amb regla de Bland', file=sortida)
         
         self.c = np.array(c)
         self.b = np.array(b)
@@ -190,6 +196,13 @@ class Simplex:
         
     def fase1(self):
         
+        with open('sortida.txt', 'a') as sortida:
+            
+            print('Fase 1', file=sortida)
+            
+        print('A segona: ', self.A, '\n')
+        print('npeye', np.eye(len(self.b)), '\n')
+        
         c = [0] * len(self.c) + [1] * len(self.b)
         A = np.hstack((self.A, np.eye(len(self.b))))
         B = list(range(len(self.c) + 1, len(c)+1))
@@ -197,7 +210,7 @@ class Simplex:
         indexs = B.copy()
         
         self.B, self.N =  Iteracions(c, self.b, A, B, N).base_B_N()
- 
+
         if self.no_tenen_valor(indexs):
 
             for _ in range(len(self.B)): 
@@ -207,7 +220,11 @@ class Simplex:
         
     def fase2(self):
         
-        Iteracions(self.c, self.b, self. A, self.B, self.N).optim()
+        with open('sortida.txt', 'a') as sortida:
+            
+            print('Fase 2', file=sortida)
+        
+        print(Iteracions(self.c, self.b, self. A, self.B, self.N).optim())
         
     def no_tenen_valor(self,indexs):
         
@@ -220,7 +237,7 @@ class Simplex:
         return True
 
 
-Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
+"""Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
     [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
     [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
     [91, 4, -42, 55, 22, 53, -100, -82, -44, 5, -4, 83, -29, 42, 0, 0, 0, 0, 0, 0],
@@ -231,7 +248,7 @@ Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0
     [-14, 99, -67, 88, 68, -39, -29, 82, 99, 1, 25, -89, -67, -15, 0, 0, 0, 1, 0, 0],
     [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
-])
+])"""
 
 
 """[-4.32160102e+02  2.90048031e+02  1.42384594e+02 -9.51457912e+01
