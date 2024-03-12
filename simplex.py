@@ -4,7 +4,7 @@ import numpy as np
     
 class Iteracions:
 
-    def __init__(self, c, b, A, B, N):
+    def __init__(self, c, b, A, B, N, i):
         
         """Inicialitzem els valors que necessitarem en la fase1
         """
@@ -21,6 +21,7 @@ class Iteracions:
         self.Xb = np.dot(self.mB_inv,self.b) # resultat de calcular la Identitat (B^-1) x b
         self.Xn = [0]*len(self.N) # sempre han de ser 0 i len(variables no bàsiques)
         self.z = np.dot(self.Cb,self.Xb) # resultat del producte escalar entre els vectors cb i xb
+        self.i = i # numero d'iteracions
         
         self.indexs_nous = self.B.copy()
         
@@ -50,14 +51,14 @@ class Iteracions:
         self.mB_inv = np.linalg.inv(self.mB) # calculem inversa de la matriu B (dels coeficients en restr. de les var. bàsiques)
         Cb_mB_inv = np.dot(self.Cb, self.mB_inv) # producte escalar entre cb i la inversa calculada
         Cb_mB_inv_An = np.dot(Cb_mB_inv, self.An) # calcul de cb x B^-1 x An
-        r = self.Cn - Cb_mB_inv_An # calcul final del cost reduït
+        self.r = self.Cn - Cb_mB_inv_An # calcul final del cost reduït
         
-        if self.positius(r): # si r és positiu
+        if self.positius(self.r): # si r és positiu np.all(vector > 0)
 
             return self.optim()
         
         else:
-            self.canviar_base(r)
+            self.canviar_base(self.r)
 
 
     def positius(self, r):
@@ -76,8 +77,10 @@ class Iteracions:
         rq= r[q] 
         
         if self.positius(db): # si db es positiu
-
-            print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
+            
+            with open('sortida.txt', 'a') as sortida:
+                
+                print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
         
         theta, p = self.calcular_0_p(db) # calculem el valor de la theta i lindex de la variable de sortida
 
@@ -98,9 +101,9 @@ class Iteracions:
         else:
             self.Cn[index_cn] = 0
 
-        self.actualitzar(theta, p, rq)
+        self.actualitzar(theta, p, rq, q)
 
-    def actualitzar(self, theta, p, rq):
+    def actualitzar(self, theta, p, rq, q):
         
         columna_entra = self.restriccions[:, self.B[p]-1]
         self.mB[:, p]=columna_entra
@@ -130,9 +133,13 @@ class Iteracions:
                 self.Cn.append(0)
         self.Cn = np.array(self.Cn)
         
+        with open('sortida.txt', 'a') as sortida:
+            print("Iteració ", self.i," : iout = ",", q = ", q,", B[p] = ", self.B[p]-1,", theta*=", round(theta,3),", z = ",round(self.z,3))
+
         if self.positius(self.Xb):
             
-            self.es_optim()
+           self.i += 1
+           self.es_optim()
 
     def primer_negatiu(self,r):
 
@@ -170,47 +177,39 @@ class Iteracions:
     
     def base_B_N(self):
                     
-        return  self.B, self.N
+        return  self.B, self.N, self.i
         
     def optim(self):
         
-        #print('z en fase 1: ', self.z)
-        #print('vB en fase 1: ', self.B)
-        
-        return self.z, self.B
+        return self.B, self.Xb, self.z, self.r, self.i
 
 
 class Simplex:
     
     def __init__(self, c, b, A):
-        
-        with open('sortida.txt', 'w') as sortida:
-            
-            print('Inici simplex primal amb regla de Bland', file=sortida)
-        
         self.c = np.array(c)
         self.b = np.array(b)
         self.A = np.array(A)
+        self.i = 0
         
+        with open('sortida.txt', 'w') as sortida:
+            
+            print("Inici simplex primal amb regla de Bland")
+
         self.fase1()
         
     def fase1(self):
-        
         with open('sortida.txt', 'a') as sortida:
+            print("Fase I", file=sortida)
             
-            print('Fase 1', file=sortida)
-            
-        print('A segona: ', self.A, '\n')
-        print('npeye', np.eye(len(self.b)), '\n')
-        
         c = [0] * len(self.c) + [1] * len(self.b)
         A = np.hstack((self.A, np.eye(len(self.b))))
         B = list(range(len(self.c) + 1, len(c)+1))
         N = list(range(1,len(self.c)+1))
         indexs = B.copy()
         
-        self.B, self.N =  Iteracions(c, self.b, A, B, N).base_B_N()
-
+        self.B, self.N, self.i =  Iteracions(c, self.b, A, B, N, self.i).base_B_N()
+ 
         if self.no_tenen_valor(indexs):
 
             for _ in range(len(self.B)): 
@@ -219,12 +218,15 @@ class Simplex:
             self.fase2()
         
     def fase2(self):
-        
         with open('sortida.txt', 'a') as sortida:
+            print("Fase II", file=sortida)
             
-            print('Fase 2', file=sortida)
+        self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self. A, self.B, self.N, self.i).optim()
+        with open('sortida.txt', 'a') as sortida:
+            print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3))
+            print("Fi simplex primal")
         
-        print(Iteracions(self.c, self.b, self. A, self.B, self.N).optim())
+        self.solucio()
         
     def no_tenen_valor(self,indexs):
         
@@ -235,6 +237,20 @@ class Simplex:
                 return False
             
         return True
+    
+    def solucio(self):
+        
+        with open('sortida.txt', 'a') as sortida:
+            print("\nSolució òptima: \n")
+        
+            Vb = ' '.join(str((numero)) for numero in self.B)
+            print("Vb = ", Vb)
+        
+            Xb = ' '.join(str(round(numero,2)) for numero in self.Xb)
+            print("xb = ", Xb)
+            print("z = ", round(self.z,3))
+            r = ' '.join(str(round(numero,2)) for numero in self.r)
+            print("r = ", r)
 
 
 """Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
@@ -250,7 +266,3 @@ class Simplex:
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
 ])"""
 
-
-"""[-4.32160102e+02  2.90048031e+02  1.42384594e+02 -9.51457912e+01
-  6.43687898e-01  1.41878101e+00  6.91032463e-01  5.41463948e-01
-  1.75991576e+00  3.81243781e-01]"""
