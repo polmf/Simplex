@@ -115,6 +115,8 @@ class Iteracions:
             
         self.An = np.column_stack(columnes_de_indexs)
         
+        #actualitzar inversa
+        
         mB_inv = np.linalg.inv(self.mB)
         self.Xb = np.dot(mB_inv,self.b)
         
@@ -134,7 +136,7 @@ class Iteracions:
         self.Cn = np.array(self.Cn)
         
         with open('sortida.txt', 'a') as sortida:
-            print("Iteració ", self.i," : iout = ",", q = ", q,", B[p] = ", self.B[p]-1,", theta*=", round(theta,3),", z = ",round(self.z,3))
+            print("Iteració ", self.i," : q = ", q,", B[p] = ", p,", theta*=", round(theta,3),", z = ",round(self.z,3))
 
         if self.positius(self.Xb):
             
