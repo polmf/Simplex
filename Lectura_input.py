@@ -27,10 +27,12 @@ with open("C:/UPC/4rt Quadrimestre/OPT/Pràctica Simplex/Input.txt", "r") as arc
     
     llista_dic = []
     iteracio = 0
+    
     i = 0
     c = []
     A = []
     b = []
+    
     num = 1
     f = True
     trobat = False

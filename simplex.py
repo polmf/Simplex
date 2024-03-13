@@ -78,7 +78,7 @@ class Iteracions:
         
         if self.positius(db): # si db es positiu
             
-            with open('sortida.txt', 'a') as sortida:
+            with open('sortida.txt', 'a', encoding='utf8') as sortida:
                 
                 print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
         
@@ -89,8 +89,8 @@ class Iteracions:
         entra = self.N[q] # id variable d'entrada
         surt = self.B[p] # id variable de sortida
 
-        self.B[p] = entra # actualitzem B
-        self.N[q] = surt # actualitzem N
+        self.B[p] = entra # actualitzem variables de B
+        self.N[q] = surt # actualitzem variables de N
 
         self.N.sort()
 
@@ -120,8 +120,13 @@ class Iteracions:
         prova = np.dot(e,self.mB_inv)"""
         
         self.mB_inv = np.linalg.inv(self.mB)
-        self.Xb = np.dot(self.mB_inv,self.b)
         
+        # actualitzem Xb sense fer ús de la inversa
+        for i, valor in enumerate(self.Xb):
+            if i == p:
+                self.Xb[p] = theta
+            else:
+                self.Xb[i] += (theta*db[i])
         
         self.z = self.z + (theta*rq)
         
@@ -133,8 +138,8 @@ class Iteracions:
         self.Cn = self.fer_Cb_Cn(self.N)
 
         
-        with open('sortida.txt', 'a') as sortida:
-            print("Iteració ", self.i," : q = ", q,", B[p] = ", p,", theta*=", round(theta,3),", z = ",round(self.z,3))
+        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+            print("Iteració ", self.i," : q = ", q,", B[p] = ", p,", theta*=", round(theta,3),", z = ",round(self.z,3), file=sortida)
 
         if self.positius(self.Xb):
             
@@ -143,8 +148,8 @@ class Iteracions:
            
         else:
             
-            with open('sortida.txt', 'a') as sortida:
-                print("S'ha perdut la factibilitat")
+            with open('sortida.txt', 'a', encoding='utf8') as sortida:
+                print("S'ha perdut la factibilitat", file=sortida)
             
 
     def primer_negatiu(self,r):
@@ -167,6 +172,7 @@ class Iteracions:
         
         llista_min = []
         indexs_min = []
+        
         for i in range(len(self.b)):
             
             if db[i]<0:
@@ -198,14 +204,14 @@ class Simplex:
         self.A = np.array(A)
         self.i = 0
         
-        with open('sortida.txt', 'w') as sortida:
+        with open('sortida.txt', 'w', encoding='utf8') as sortida:
             
-            print("Inici simplex primal amb regla de Bland")
+            print("Inici simplex primal amb regla de Bland", file=sortida)
 
         self.fase1()
         
     def fase1(self):
-        with open('sortida.txt', 'a') as sortida:
+        with open('sortida.txt', 'a', encoding='utf8') as sortida:
             print("Fase I", file=sortida)
             
         c = [0] * len(self.c) + [1] * len(self.b)
@@ -224,13 +230,13 @@ class Simplex:
             self.fase2()
         
     def fase2(self):
-        with open('sortida.txt', 'a') as sortida:
+        with open('sortida.txt', 'a', encoding='utf8') as sortida:
             print("Fase II", file=sortida)
             
         self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self. A, self.B, self.N, self.i).optim()
-        with open('sortida.txt', 'a') as sortida:
-            print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3))
-            print("Fi simplex primal")
+        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+            print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
+            print("Fi simplex primal", file=sortida)
         
         self.solucio()
         
@@ -246,17 +252,17 @@ class Simplex:
     
     def solucio(self):
         
-        with open('sortida.txt', 'a') as sortida:
-            print("\nSolució òptima: \n")
+        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+            print("\nSolució òptima: \n", file=sortida)
         
             Vb = ' '.join(str((numero)) for numero in self.B)
-            print("Vb = ", Vb)
+            print("Vb = ", Vb, file=sortida)
         
             Xb = ' '.join(str(round(numero,2)) for numero in self.Xb)
-            print("xb = ", Xb)
-            print("z = ", round(self.z,3))
+            print("xb = ", Xb, file=sortida)
+            print("z = ", round(self.z,3), file=sortida)
             r = ' '.join(str(round(numero,2)) for numero in self.r)
-            print("r = ", r)
+            print("r = ", r, file=sortida)
 
 
 Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
