@@ -48,7 +48,7 @@ class Iteracions:
 
     def es_optim(self):
 
-        self.mB_inv = np.linalg.inv(self.mB) # calculem inversa de la matriu B (dels coeficients en restr. de les var. bàsiques)
+        #self.mB_inv = np.linalg.inv(self.mB) # calculem inversa de la matriu B (dels coeficients en restr. de les var. bàsiques)
         Cb_mB_inv = np.dot(self.Cb, self.mB_inv) # producte escalar entre cb i la inversa calculada
         Cb_mB_inv_An = np.dot(Cb_mB_inv, self.An) # calcul de cb x B^-1 x An
         self.r = self.Cn - Cb_mB_inv_An # calcul final del cost reduït
@@ -101,24 +101,27 @@ class Iteracions:
         else:
             self.Cn[index_cn] = 0
 
-        self.actualitzar(theta, p, rq, q)
+        self.actualitzar(theta, p, rq, q, db)
 
-    def actualitzar(self, theta, p, rq, q):
+    def actualitzar(self, theta, p, rq, q, db):
         
         columna_entra = self.restriccions[:, self.B[p]-1]
         self.mB[:, p]=columna_entra
         
-        columnes_de_indexs =[]
-        for index in self.N:
-            columna = self.restriccions[:,index-1]
-            columnes_de_indexs.append(columna)
-            
-        self.An = np.column_stack(columnes_de_indexs)
+        self.An = self.fer_matriu(self.N)
         
-        #actualitzar inversa
+        """ e = np.eye(len(self.B))
+        nova_columna = []
+        for i in range(len(db)):
+            nova_columna.append(-db[i] / db[p]) 
+        nova_columna = np.array(nova_columna)
         
-        mB_inv = np.linalg.inv(self.mB)
-        self.Xb = np.dot(mB_inv,self.b)
+        e[:, -1] = nova_columna
+        prova = np.dot(e,self.mB_inv)"""
+        
+        self.mB_inv = np.linalg.inv(self.mB)
+        self.Xb = np.dot(self.mB_inv,self.b)
+        
         
         self.z = self.z + (theta*rq)
         
@@ -127,13 +130,8 @@ class Iteracions:
         else :
             self.Cb[p] = 0
         
-        self.Cn = []
-        for index in self.N:
-            if self.c[index-1]!=0:
-                self.Cn.append(self.c[index-1])
-            else:
-                self.Cn.append(0)
-        self.Cn = np.array(self.Cn)
+        self.Cn = self.fer_Cb_Cn(self.N)
+
         
         with open('sortida.txt', 'a') as sortida:
             print("Iteració ", self.i," : q = ", q,", B[p] = ", p,", theta*=", round(theta,3),", z = ",round(self.z,3))
@@ -142,6 +140,12 @@ class Iteracions:
             
            self.i += 1
            self.es_optim()
+           
+        else:
+            
+            with open('sortida.txt', 'a') as sortida:
+                print("S'ha perdut la factibilitat")
+            
 
     def primer_negatiu(self,r):
 
@@ -255,7 +259,7 @@ class Simplex:
             print("r = ", r)
 
 
-"""Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
+Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
     [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
     [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
     [91, 4, -42, 55, 22, 53, -100, -82, -44, 5, -4, 83, -29, 42, 0, 0, 0, 0, 0, 0],
@@ -266,5 +270,5 @@ class Simplex:
     [-14, 99, -67, 88, 68, -39, -29, 82, 99, 1, 25, -89, -67, -15, 0, 0, 0, 1, 0, 0],
     [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
-])"""
+])
 
