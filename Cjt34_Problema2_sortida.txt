@@ -34,6 +34,9 @@ Iteració 29: N[q] = 15, B[p] = 10, theta*= 0.926, z = -42.298
 Iteració 30: N[q] = 10, B[p] = 17, theta*= 150.172, z = -93.057
 Iteració 31: N[q] = 3, B[p] = 19, theta*= 444.748, z = -250.134
 
+Solució òptima trobada, iteració =  31 , z =  -250.134
+Fi simplex primal
+
 Solució òptima: 
 
 Vb =  12 1 11 16 14 2 13 19 17 6

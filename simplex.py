@@ -82,6 +82,8 @@ class Iteracions:
             with open(self.nom, 'a', encoding='utf8') as sortida:
                 
                 print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
+                self.B = None
+                return None
         
         theta, p = self.calcular_0_p(db) # calculem el valor de la theta i lindex de la variable de sortida
 
@@ -131,7 +133,7 @@ class Iteracions:
         self.comparar_matrices(self.mB_inv, prova)
         
         # actualitzem Xb sense fer ús de la inversa
-        for i, valor in enumerate(self.Xb):
+        for i in range(len(self.Xb)):
             if i == p:
                 self.Xb[p] = theta
             else:
@@ -159,6 +161,9 @@ class Iteracions:
             
             with open(self.nom, 'a', encoding='utf8') as sortida:
                 print("S'ha perdut la factibilitat", file=sortida)
+                self.B = None
+                return None
+                
             
 
     def primer_negatiu(self,r):
@@ -248,7 +253,7 @@ class Simplex:
         N = list(range(1,len(self.c)+1))
         indexs = B.copy()
         
-        self.B, self.N, self.i =  Iteracions(c, self.b, A, B, N, self.i, self.nom).base_B_N()
+        self.B, self.N, self.i = Iteracions(c, self.b, A, B, N, self.i, self.nom).base_B_N()
  
         if self.no_tenen_valor(indexs):
 
@@ -256,19 +261,24 @@ class Simplex:
                 self.N.pop()
 
             self.fase2()
+            
+        else:
+            print('No tenen valor')
         
     def fase2(self):
         with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Fase II", file=sortida)
             
-        self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim()
-        with open(self.nom, 'a', encoding='utf8') as sortida:
-            print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
-            print("Fi simplex primal", file=sortida)
+        self.B, self.Xb, self.z, self.r, self.i = Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim()
         
-        self.solucio()
-        print(self.z)
-        print(self.z)
+        if self.B:
+            
+            with open(self.nom, 'a', encoding='utf8') as sortida:
+                print("\nSolució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
+                print("Fi simplex primal", file=sortida)
+            
+            self.solucio()
+            print(self.z)
         
     def no_tenen_valor(self,indexs):
         

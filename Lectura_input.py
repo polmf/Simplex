@@ -35,9 +35,6 @@ with open("Input.txt", "r") as archivo:
     
     while i < len(total):
         
-        if 'alumno' in total[i] and '45' in total[i]:
-            canvi = False
-        
         if 'c=' in total[i]:
             
             k = i+1
@@ -94,6 +91,10 @@ with open("Input.txt", "r") as archivo:
         if 'b=' in total[i]:
             k = i+1
             while k < len(total):
+                
+                if 'alumno' in total[i] and '45' in total[i]:
+                    canvi = False
+                
                 if 'c=' in total[k]:
                     i = k-1
                     break
@@ -111,10 +112,13 @@ with open("Input.txt", "r") as archivo:
                 k+=1
                 i = k
                 
-        #print(c, A, b)
+                
         if len(c) and len(A) and len(b):
-            
-            if not canvi:
+            if not canvi and pl == 5:
+                pl = 1
+                cjt1 = True
+                
+            if not canvi and cjt1:
                 Simplex(c=c, b=b, A=A, cjt='45', pl=pl)
             else:
                 Simplex(c=c, b=b, A=A, cjt='34', pl=pl)
@@ -123,16 +127,6 @@ with open("Input.txt", "r") as archivo:
             b = []
             A = []
             pl += 1
-            
-            #iteracio += 1
-            #print('iteracio: ', iteracio, '\n', c, A, b)
-            #nom_dic = 'problem_{}'.format(num)  # Nombre del diccionario con número de iteración
-            #nom_dic = {'c': c, 'A': A, 'b': b}
-            #llista_dic.append(nom_dic)
-            #c = []
-            #b = []
-            #A = []
 
-            
         i += 1
 

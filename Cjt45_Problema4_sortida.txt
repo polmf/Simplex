@@ -1,0 +1,39 @@
+Inici simplex primal amb regla de Bland
+Fase I
+Iteració 0: N[q] = 28, B[p] = 1, theta*= 9.097, z = 3361.264
+Iteració 1: N[q] = 30, B[p] = 2, theta*= 2.253, z = 3085.02
+Iteració 2: N[q] = 1, B[p] = 3, theta*= 0.929, z = 2297.713
+Iteració 3: N[q] = 25, B[p] = 4, theta*= 0.875, z = 1793.658
+Iteració 4: N[q] = 27, B[p] = 1, theta*= 0.281, z = 1619.318
+Iteració 5: N[q] = 1, B[p] = 5, theta*= 0.391, z = 1556.029
+Iteració 6: N[q] = 3, B[p] = 6, theta*= 4.364, z = 1407.817
+Iteració 7: N[q] = 32, B[p] = 7, theta*= 0.704, z = 1293.449
+Iteració 8: N[q] = 4, B[p] = 3, theta*= 0.447, z = 1285.447
+Iteració 9: N[q] = 34, B[p] = 10, theta*= 0.257, z = 1010.292
+Iteració 10: N[q] = 3, B[p] = 1, theta*= 1.051, z = 948.2
+Iteració 11: N[q] = 29, B[p] = 8, theta*= 1.405, z = 384.376
+Iteració 12: N[q] = 6, B[p] = 3, theta*= 1.639, z = 118.489
+Iteració 13: N[q] = 26, B[p] = 4, theta*= 0.086, z = 83.453
+Iteració 14: N[q] = 4, B[p] = 11, theta*= 0.447, z = 82.241
+Iteració 15: N[q] = 33, B[p] = 12, theta*= 0.653, z = 27.862
+Iteració 16: N[q] = 11, B[p] = 4, theta*= 0.054, z = 24.473
+Iteració 17: N[q] = 3, B[p] = 6, theta*= 3.265, z = 24.444
+Iteració 18: N[q] = 31, B[p] = 13, theta*= 0.597, z = 0.0
+Fase II
+Iteració 19: N[q] = 13, B[p] = 14, theta*= 0.304, z = -959.086
+Iteració 20: N[q] = 12, B[p] = 15, theta*= 216.371, z = -1059.192
+Iteració 21: N[q] = 7, B[p] = 9, theta*= 0.29, z = -1061.628
+Iteració 22: N[q] = 5, B[p] = 17, theta*= 96.611, z = -1190.058
+Iteració 23: N[q] = 9, B[p] = 7, theta*= 0.59, z = -1274.197
+Iteració 24: N[q] = 2, B[p] = 11, theta*= 2.193, z = -1329.191
+Iteració 25: N[q] = 14, B[p] = 16, theta*= 5.5, z = -1334.4
+Iteració 26: N[q] = 8, B[p] = 18, theta*= 48.222, z = -1378.821
+Iteració 27: N[q] = 7, B[p] = 2, theta*= 0.113, z = -1443.043
+Iteració 28: N[q] = 2, B[p] = 19, theta*= 15.774, z = -1450.055
+Iteració 29: N[q] = 17, B[p] = 20, theta*= 364.517, z = -1587.742
+Iteració 30: N[q] = 6, B[p] = 21, theta*= 212.615, z = -1761.885
+Iteració 31: N[q] = 10, B[p] = 17, theta*= 101.57, z = -1777.856
+Iteració 32: N[q] = 4, B[p] = 22, theta*= 434.776, z = -2046.583
+Iteració 33: N[q] = 1, B[p] = 23, theta*= 909.5, z = -2501.333
+Iteració 34: N[q] = 11, B[p] = 8, theta*= 469.0, z = -3752.0
+DBF de descenso no acotada, Problema Lineal no acotado

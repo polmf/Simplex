@@ -1,0 +1,35 @@
+Inici simplex primal amb regla de Bland
+Fase I
+Iteració 0: N[q] = 23, B[p] = 1, theta*= 0.593, z = 2790.67
+Iteració 1: N[q] = 28, B[p] = 2, theta*= 1.519, z = 2524.559
+Iteració 2: N[q] = 30, B[p] = 3, theta*= 0.708, z = 2217.803
+Iteració 3: N[q] = 24, B[p] = 4, theta*= 0.545, z = 1813.13
+Iteració 4: N[q] = 21, B[p] = 5, theta*= 1.352, z = 1380.947
+Iteració 5: N[q] = 29, B[p] = 7, theta*= 0.525, z = 1079.371
+Iteració 6: N[q] = 26, B[p] = 6, theta*= 0.767, z = 654.571
+Iteració 7: N[q] = 22, B[p] = 8, theta*= 1.402, z = 543.414
+Iteració 8: N[q] = 5, B[p] = 10, theta*= 1.376, z = 460.966
+Iteració 9: N[q] = 27, B[p] = 11, theta*= 0.192, z = 388.363
+Iteració 10: N[q] = 8, B[p] = 5, theta*= 0.249, z = 382.473
+Iteració 11: N[q] = 6, B[p] = 12, theta*= 0.582, z = 174.975
+Iteració 12: N[q] = 25, B[p] = 8, theta*= 1.657, z = -0.0
+Fase II
+Iteració 13: N[q] = 5, B[p] = 6, theta*= 0.042, z = -178.649
+Iteració 14: N[q] = 7, B[p] = 13, theta*= 1.307, z = -299.837
+Iteració 15: N[q] = 12, B[p] = 5, theta*= 0.947, z = -300.742
+Iteració 16: N[q] = 10, B[p] = 14, theta*= 1.113, z = -409.979
+Iteració 17: N[q] = 13, B[p] = 12, theta*= 1.169, z = -454.7
+Iteració 18: N[q] = 11, B[p] = 16, theta*= 66.549, z = -474.259
+Iteració 19: N[q] = 5, B[p] = 18, theta*= 47.827, z = -486.844
+Iteració 20: N[q] = 1, B[p] = 13, theta*= 4.385, z = -581.051
+Iteració 21: N[q] = 12, B[p] = 17, theta*= 74.55, z = -581.986
+
+Solució òptima trobada, iteració =  21 , z =  -581.986
+Fi simplex primal
+
+Solució òptima: 
+
+Vb =  14 6 13 4 8 18 16 2 17 3
+xb =  0.8 3.72 4.81 1.6 0.75 480.65 188.42 0.46 74.55 1.58
+z =  -581.986
+r =  41.41 70.07 49.33 86.3 57.57 22.07 3.92 0.64 0.42 0.26
