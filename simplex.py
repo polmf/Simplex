@@ -112,6 +112,7 @@ class Iteracions:
         self.An = self.fer_matriu(self.N)
         
         e = np.eye(len(self.B))
+        e = np.eye(len(self.B))
         nova_columna = []
         for i in range(len(db)):
             if i != p:
@@ -120,6 +121,8 @@ class Iteracions:
                 nova_columna.append(-1/db[p])
         nova_columna = np.array(nova_columna) 
         
+        e[:, -p] = nova_columna
+        prova = np.dot(e,self.mB_inv)
         e[:, -p] = nova_columna
         prova = np.dot(e,self.mB_inv)
         
@@ -259,11 +262,12 @@ class Simplex:
             print("Fase II", file=sortida)
             
         self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim()
-        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+        with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
             print("Fi simplex primal", file=sortida)
         
         self.solucio()
+        print(self.z)
         print(self.z)
         
     def no_tenen_valor(self,indexs):
@@ -291,6 +295,7 @@ class Simplex:
             print("r = ", r, file=sortida)
 
 
+#Simplex([-1, 0, 0],[4,2],[[1, 1, 1],[2, -1, 0]])
 """Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
     [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
     [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
@@ -303,4 +308,3 @@ class Simplex:
     [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
 ])"""
-
