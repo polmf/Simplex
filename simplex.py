@@ -110,17 +110,21 @@ class Iteracions:
         
         self.An = self.fer_matriu(self.N)
         
-        """ e = np.eye(len(self.B))
+        e = np.eye(len(self.B))
         nova_columna = []
         for i in range(len(db)):
-            nova_columna.append(-db[i] / db[p]) 
-        nova_columna = np.array(nova_columna)
+            if i != p:
+                nova_columna.append(-db[i] / db[p]) 
+            else:
+                nova_columna.append(-1/db[p])
+        nova_columna = np.array(nova_columna) 
         
-        e[:, -1] = nova_columna
-        prova = np.dot(e,self.mB_inv)"""
+        e[:, -p] = nova_columna
+        prova = np.dot(e,self.mB_inv)
         
         self.mB_inv = np.linalg.inv(self.mB)
         
+        self.comparar_matrices(self.mB_inv, prova)
         # actualitzem Xb sense fer ús de la inversa
         for i, valor in enumerate(self.Xb):
             if i == p:
@@ -194,6 +198,21 @@ class Iteracions:
     def optim(self):
         
         return self.B, self.Xb, self.z, self.r, self.i
+    
+    def comparar_matrices(self, matriz1, matriz2):
+        """Compara dos matrices y devuelve True si son iguales, False en caso contrario."""
+        if len(matriz1) != len(matriz2) or len(matriz1[0]) != len(matriz2[0]):
+            print("Mida diferent:", False)
+            return False  # Las matrices tienen diferentes dimensiones
+        
+        for i in range(len(matriz1)):
+            for j in range(len(matriz1[0])):
+                if matriz1[i][j] != matriz2[i][j]:
+                    print("Numero diferent:", False)
+                    return False  # Elementos diferentes encontrados
+                
+        print("Son iguals:", True)
+        return True  # Las matrices son iguales en todos los elementos
 
 
 class Simplex:
@@ -239,6 +258,7 @@ class Simplex:
             print("Fi simplex primal", file=sortida)
         
         self.solucio()
+        print(self.z)
         
     def no_tenen_valor(self,indexs):
         
@@ -265,6 +285,7 @@ class Simplex:
             print("r = ", r, file=sortida)
 
 
+#Simplex([-1, 0, 0],[4,2],[[1, 1, 1],[2, -1, 0]])
 Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
     [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
     [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
@@ -277,4 +298,3 @@ Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0
     [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
 ])
-
