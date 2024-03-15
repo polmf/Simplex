@@ -1,0 +1,16 @@
+Inici simplex primal amb regla de Bland
+Fase I
+Iteració 0: N[q] = 28, B[p] = 1, theta*= 0.362, z = 1107.95
+Iteració 1: N[q] = 30, B[p] = 2, theta*= 0.072, z = 1103.248
+Iteració 2: N[q] = 1, B[p] = 3, theta*= 0.162, z = 1052.098
+Iteració 3: N[q] = 2, B[p] = 4, theta*= 0.056, z = 1031.453
+Iteració 4: N[q] = 26, B[p] = 5, theta*= 0.487, z = 951.743
+Iteració 5: N[q] = 4, B[p] = 1, theta*= 0.008, z = 950.516
+Iteració 6: N[q] = 1, B[p] = 2, theta*= 0.006, z = 950.032
+Iteració 7: N[q] = 2, B[p] = 8, theta*= 0.006, z = 949.273
+Iteració 8: N[q] = 8, B[p] = 16, theta*= 0.809, z = 948.02
+Iteració 9: N[q] = 27, B[p] = 17, theta*= 293.523, z = 654.497
+Iteració 10: N[q] = 16, B[p] = 12, theta*= 0.112, z = 638.813
+Iteració 11: N[q] = 3, B[p] = 18, theta*= 11.785, z = 621.054
+Iteració 12: N[q] = 29, B[p] = 19, theta*= 48.817, z = 572.237
+Iteració 13: N[q] = 5, B[p] = 26, theta*= 2.444, z = 471.778

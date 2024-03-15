@@ -4,7 +4,7 @@ import numpy as np
     
 class Iteracions:
 
-    def __init__(self, c, b, A, B, N, i):
+    def __init__(self, c, b, A, B, N, i, nom=None):
         
         """Inicialitzem els valors que necessitarem en la fase1
         """
@@ -22,6 +22,7 @@ class Iteracions:
         self.Xn = [0]*len(self.N) # sempre han de ser 0 i len(variables no bàsiques)
         self.z = np.dot(self.Cb,self.Xb) # resultat del producte escalar entre els vectors cb i xb
         self.i = i # numero d'iteracions
+        self.nom = nom # nom del fitxer de sortida
         
         self.indexs_nous = self.B.copy()
         
@@ -78,7 +79,7 @@ class Iteracions:
         
         if self.positius(db): # si db es positiu
             
-            with open('sortida.txt', 'a', encoding='utf8') as sortida:
+            with open(self.nom, 'a', encoding='utf8') as sortida:
                 
                 print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
         
@@ -86,15 +87,15 @@ class Iteracions:
 
         #p = self.trobar_p(db) 
 
-        entra = self.N[q] # id variable d'entrada
-        surt = self.B[p] # id variable de sortida
+        self.entra = self.N[q] # id variable d'entrada
+        self.surt = self.B[p] # id variable de sortida
 
-        self.B[p] = entra # actualitzem variables de B
-        self.N[q] = surt # actualitzem variables de N
+        self.B[p] = self.entra # actualitzem variables de B
+        self.N[q] = self.surt # actualitzem variables de N
 
         self.N.sort()
 
-        index_cn = next(i for i in range(len(self.N)) if self.N[i] == surt)
+        index_cn = next(i for i in range(len(self.N)) if self.N[i] == self.surt)
 
         if self.c[self.N[q]-1]!=0: # si el coeficient de la variable que ha entrat en les no bàsiques és diferent de 0
             self.Cn[index_cn] = self.c[self.N[q]-1] # actualitzem vector cn amb el coeficient en la funcio objectiu de la variable que entra en N
@@ -110,16 +111,21 @@ class Iteracions:
         
         self.An = self.fer_matriu(self.N)
         
-        """ e = np.eye(len(self.B))
+        e = np.eye(len(self.B))
         nova_columna = []
         for i in range(len(db)):
-            nova_columna.append(-db[i] / db[p]) 
-        nova_columna = np.array(nova_columna)
+            if i != p:
+                nova_columna.append(-db[i] / db[p]) 
+            else:
+                nova_columna.append(-1/db[p])
+        nova_columna = np.array(nova_columna) 
         
-        e[:, -1] = nova_columna
-        prova = np.dot(e,self.mB_inv)"""
+        e[:, -p] = nova_columna
+        prova = np.dot(e,self.mB_inv)
         
         self.mB_inv = np.linalg.inv(self.mB)
+        
+        self.comparar_matrices(self.mB_inv, prova)
         
         # actualitzem Xb sense fer ús de la inversa
         for i, valor in enumerate(self.Xb):
@@ -132,14 +138,14 @@ class Iteracions:
         
         if self.c[self.B[p]-1]!=0:
             self.Cb[p] = self.c[self.B[p]-1]
-        else :
+        else:
             self.Cb[p] = 0
         
         self.Cn = self.fer_Cb_Cn(self.N)
 
         
-        with open('sortida.txt', 'a', encoding='utf8') as sortida:
-            print("Iteració ", self.i," : q = ", q,", B[p] = ", p,", theta*=", round(theta,3),", z = ",round(self.z,3), file=sortida)
+        with open(self.nom, 'a', encoding='utf8') as sortida:
+            print(f"Iteració {self.i}: N[q] = {self.surt}, B[p] = {self.entra}, theta*= {round(theta,3)}, z = {round(self.z,3)}", file=sortida)
 
         if self.positius(self.Xb):
             
@@ -148,7 +154,7 @@ class Iteracions:
            
         else:
             
-            with open('sortida.txt', 'a', encoding='utf8') as sortida:
+            with open(self.nom, 'a', encoding='utf8') as sortida:
                 print("S'ha perdut la factibilitat", file=sortida)
             
 
@@ -195,23 +201,42 @@ class Iteracions:
         
         return self.B, self.Xb, self.z, self.r, self.i
 
+    def comparar_matrices(self, matriz1, matriz2):
+        """Compara dos matrices y devuelve True si son iguales, False en caso contrario."""
+        if len(matriz1) != len(matriz2) or len(matriz1[0]) != len(matriz2[0]):
+            print("Mida diferent:", False)
+            return False  # Las matrices tienen diferentes dimensiones
+        
+        for i in range(len(matriz1)):
+            for j in range(len(matriz1[0])):
+                if matriz1[i][j] != matriz2[i][j]:
+                    print("Numero diferent:", False)
+                    return False  # Elementos diferentes encontrados
+                
+        print("Son iguals:", True)
+        return True  # Las matrices son iguales en todos los elementos
 
 class Simplex:
     
-    def __init__(self, c, b, A):
+    def __init__(self, c, b, A, cjt=None, pl=None):
         self.c = np.array(c)
         self.b = np.array(b)
         self.A = np.array(A)
         self.i = 0
         
-        with open('sortida.txt', 'w', encoding='utf8') as sortida:
+        if not cjt:
+            print('pl:', c, b, A)
+        
+        self.nom = f'Cjt{cjt}_Problema{pl}_sortida.txt'
+        
+        with open(self.nom, 'w', encoding='utf8') as sortida:
             
             print("Inici simplex primal amb regla de Bland", file=sortida)
 
         self.fase1()
         
     def fase1(self):
-        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+        with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Fase I", file=sortida)
             
         c = [0] * len(self.c) + [1] * len(self.b)
@@ -220,7 +245,7 @@ class Simplex:
         N = list(range(1,len(self.c)+1))
         indexs = B.copy()
         
-        self.B, self.N, self.i =  Iteracions(c, self.b, A, B, N, self.i).base_B_N()
+        self.B, self.N, self.i =  Iteracions(c, self.b, A, B, N, self.i, self.nom).base_B_N()
  
         if self.no_tenen_valor(indexs):
 
@@ -230,15 +255,16 @@ class Simplex:
             self.fase2()
         
     def fase2(self):
-        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+        with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Fase II", file=sortida)
             
-        self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self. A, self.B, self.N, self.i).optim()
+        self.B, self.Xb, self.z, self.r, self.i =Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim()
         with open('sortida.txt', 'a', encoding='utf8') as sortida:
             print("Solució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
             print("Fi simplex primal", file=sortida)
         
         self.solucio()
+        print(self.z)
         
     def no_tenen_valor(self,indexs):
         
@@ -252,7 +278,7 @@ class Simplex:
     
     def solucio(self):
         
-        with open('sortida.txt', 'a', encoding='utf8') as sortida:
+        with open(self.nom, 'a', encoding='utf8') as sortida:
             print("\nSolució òptima: \n", file=sortida)
         
             Vb = ' '.join(str((numero)) for numero in self.B)
@@ -265,7 +291,7 @@ class Simplex:
             print("r = ", r, file=sortida)
 
 
-Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
+"""Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
     [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
     [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
     [91, 4, -42, 55, 22, 53, -100, -82, -44, 5, -4, 83, -29, 42, 0, 0, 0, 0, 0, 0],
@@ -276,5 +302,5 @@ Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0
     [-14, 99, -67, 88, 68, -39, -29, 82, 99, 1, 25, -89, -67, -15, 0, 0, 0, 1, 0, 0],
     [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
     [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
-])
+])"""
 

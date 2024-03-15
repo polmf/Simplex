@@ -1,42 +1,42 @@
 from simplex import *
 
-with open("C:/UPC/4rt Quadrimestre/OPT/Pràctica Simplex/Input.txt", "r") as archivo:
+with open("Input.txt", "r") as archivo:
     total = []
     cjt1 = None
-    cjt2 = None
+    canvi = None
     for linea in archivo:
         if 'alumno' in linea and '34' in linea:
             cjt1 = True
             
-        if 'alumno' in linea and '35' in linea:
+        elif 'alumno' in linea and '35' in linea:
             cjt1 = False
             
-        if 'alumno' in linea and '45' in linea:
-            cjt2 = True
+        elif 'alumno' in linea and '45' in linea:
+            canvi = True
             
-        if 'alumno' in linea and '46' in linea:
-            cjt2 = False
+        elif 'alumno' in linea and '46' in linea:
+            break
         
         if cjt1:
-            #print(f'linia{i}', linea)
             total.append(linea)
             
-        if cjt2:
+        elif canvi:
             total.append(linea)
         
-    
-    llista_dic = []
-    iteracio = 0
     
     i = 0
     c = []
     A = []
     b = []
     
-    num = 1
-    f = True
+    pl = 1
+    
     trobat = False
-    while i < len(total) and f:
+    
+    while i < len(total):
+        
+        if 'alumno' in total[i] and '45' in total[i]:
+            canvi = False
         
         if 'c=' in total[i]:
             
@@ -73,7 +73,6 @@ with open("C:/UPC/4rt Quadrimestre/OPT/Pràctica Simplex/Input.txt", "r") as arc
                     
                 if 'Col' in total[k] and trobat:
                     k += 1
-                    print(len(A))
                     A_ = []
                     
                     for i in range(len(A)+1):
@@ -115,7 +114,15 @@ with open("C:/UPC/4rt Quadrimestre/OPT/Pràctica Simplex/Input.txt", "r") as arc
         #print(c, A, b)
         if len(c) and len(A) and len(b):
             
-            Simplex(c=c, b=b, A=A)
+            if not canvi:
+                Simplex(c=c, b=b, A=A, cjt='45', pl=pl)
+            else:
+                Simplex(c=c, b=b, A=A, cjt='34', pl=pl)
+            
+            c = []
+            b = []
+            A = []
+            pl += 1
             
             #iteracio += 1
             #print('iteracio: ', iteracio, '\n', c, A, b)
@@ -125,7 +132,7 @@ with open("C:/UPC/4rt Quadrimestre/OPT/Pràctica Simplex/Input.txt", "r") as arc
             #c = []
             #b = []
             #A = []
-            f = False
+
             
         i += 1
 
