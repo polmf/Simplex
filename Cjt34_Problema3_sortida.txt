@@ -15,4 +15,4 @@ Iteració 11: N[q] = 3, B[p] = 18, theta*= 11.785, z = 621.054
 Iteració 12: N[q] = 29, B[p] = 19, theta*= 48.817, z = 572.237
 Iteració 13: N[q] = 5, B[p] = 26, theta*= 2.444, z = 471.778
 
-El problema no té solució perquè una variable auxiliar té valor
+El problema lineal no és factible ja que z* > 0 en la fase I

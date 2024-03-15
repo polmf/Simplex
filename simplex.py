@@ -81,7 +81,7 @@ class Iteracions:
             
             with open(self.nom, 'a', encoding='utf8') as sortida:
                 
-                print('DBF de descenso no acotada, Problema Lineal no acotado', file=sortida)
+                print('\nDBF de descens no acotada, Problema Lineal no acotat', file=sortida)
                 self.B = None
                 return None
         
@@ -160,7 +160,7 @@ class Iteracions:
         else:
             
             with open(self.nom, 'a', encoding='utf8') as sortida:
-                print("S'ha perdut la factibilitat", file=sortida)
+                print("\nS'ha perdut la factibilitat", file=sortida)
                 self.B = None
                 return None
                 
@@ -264,7 +264,7 @@ class Simplex:
             
         else:
             with open(self.nom, 'a', encoding='utf8') as sortida:
-                print('\nEl problema no té solució perquè una variable auxiliar té valor', file=sortida)
+                print('\nEl problema lineal no és factible ja que z* > 0 en la fase I', file=sortida)
         
     def fase2(self):
         with open(self.nom, 'a', encoding='utf8') as sortida:

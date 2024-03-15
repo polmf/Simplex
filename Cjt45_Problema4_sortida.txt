@@ -36,4 +36,5 @@ Iteració 31: N[q] = 10, B[p] = 17, theta*= 101.57, z = -1777.856
 Iteració 32: N[q] = 4, B[p] = 22, theta*= 434.776, z = -2046.583
 Iteració 33: N[q] = 1, B[p] = 23, theta*= 909.5, z = -2501.333
 Iteració 34: N[q] = 11, B[p] = 8, theta*= 469.0, z = -3752.0
-DBF de descenso no acotada, Problema Lineal no acotado
+
+DBF de descens no acotada, Problema Lineal no acotat
