@@ -264,7 +264,7 @@ class Simplex:
             
         else:
             with open(self.nom, 'a', encoding='utf8') as sortida:
-                print('El problema no té solució perquè una variable auxiliar té valor', file=sortida)
+                print('\nEl problema no té solució perquè una variable auxiliar té valor', file=sortida)
         
     def fase2(self):
         with open(self.nom, 'a', encoding='utf8') as sortida:

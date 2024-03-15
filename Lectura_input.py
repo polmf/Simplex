@@ -114,6 +114,7 @@ with open("Input.txt", "r") as archivo:
                 
                 
         if len(c) and len(A) and len(b):
+            
             if not canvi and pl == 5:
                 pl = 1
                 cjt1 = True
