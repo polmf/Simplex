@@ -118,12 +118,12 @@ with open("Input.txt", "r") as archivo:
             if not canvi and pl == 5:
                 pl = 1
                 cjt1 = True
-                
+   
             if not canvi and cjt1:
                 Simplex(c=c, b=b, A=A, cjt='45', pl=pl)
             else:
                 Simplex(c=c, b=b, A=A, cjt='34', pl=pl)
-            
+                
             c = []
             b = []
             A = []

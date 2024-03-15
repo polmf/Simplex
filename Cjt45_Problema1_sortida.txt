@@ -12,7 +12,7 @@ Iteració 8: N[q] = 5, B[p] = 10, theta*= 1.376, z = 460.966
 Iteració 9: N[q] = 27, B[p] = 11, theta*= 0.192, z = 388.363
 Iteració 10: N[q] = 8, B[p] = 5, theta*= 0.249, z = 382.473
 Iteració 11: N[q] = 6, B[p] = 12, theta*= 0.582, z = 174.975
-Iteració 12: N[q] = 25, B[p] = 8, theta*= 1.657, z = -0.0
+Iteració 12: N[q] = 25, B[p] = 8, theta*= 1.657, z = 0.0
 Fase II
 Iteració 13: N[q] = 5, B[p] = 6, theta*= 0.042, z = -178.649
 Iteració 14: N[q] = 7, B[p] = 13, theta*= 1.307, z = -299.837

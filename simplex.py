@@ -71,8 +71,8 @@ class Iteracions:
     
     def canviar_base(self,r):
 
-        q = self.primer_negatiu(r) # retornem l'index de la primera variable negativa que ens trobem (Regla de Bland)  
-        # mB_inv = np.linalg.inv(self.mB) # ja la tenim calculada
+        q = self.primer_negatiu(r) # retornem l'index de la primera variable negativa que ens trobem (Regla de Bland) 
+        
         db = np.dot(-(self.mB_inv),self.trobar_Aq(q)) # calculem db = - B^-1 x Aq (coeficients de la variable amb index q en les restriccions)
         
         rq= r[q] 
@@ -86,8 +86,6 @@ class Iteracions:
                 return None
         
         theta, p = self.calcular_0_p(db) # calculem el valor de la theta i lindex de la variable de sortida
-
-        #p = self.trobar_p(db) 
 
         self.entra = self.N[q] # id variable d'entrada
         self.surt = self.B[p] # id variable de sortida
@@ -113,8 +111,7 @@ class Iteracions:
         
         self.An = self.fer_matriu(self.N)
         
-        e = np.eye(len(self.B))
-        e = np.eye(len(self.B))
+        e = np.eye(len(self.mB))
         nova_columna = []
         for i in range(len(db)):
             if i != p:
@@ -123,14 +120,8 @@ class Iteracions:
                 nova_columna.append(-1/db[p])
         nova_columna = np.array(nova_columna) 
         
-        e[:, -p] = nova_columna
-        prova = np.dot(e,self.mB_inv)
-        e[:, -p] = nova_columna
-        prova = np.dot(e,self.mB_inv)
-        
-        self.mB_inv = np.linalg.inv(self.mB)
-        
-        self.comparar_matrices(self.mB_inv, prova)
+        e[:, p] = nova_columna
+        self.mB_inv = np.dot(e,self.mB_inv)
         
         # actualitzem Xb sense fer ús de la inversa
         for i in range(len(self.Xb)):
@@ -208,21 +199,7 @@ class Iteracions:
     def optim(self):
         
         return self.B, self.Xb, self.z, self.r, self.i
-
-    def comparar_matrices(self, matriz1, matriz2):
-        """Compara dos matrices y devuelve True si son iguales, False en caso contrario."""
-        if len(matriz1) != len(matriz2) or len(matriz1[0]) != len(matriz2[0]):
-            print("Mida diferent:", False)
-            return False  # Las matrices tienen diferentes dimensiones
-        
-        for i in range(len(matriz1)):
-            for j in range(len(matriz1[0])):
-                if matriz1[i][j] != matriz2[i][j]:
-                    print("Numero diferent:", False)
-                    return False  # Elementos diferentes encontrados
-                
-        print("Son iguals:", True)
-        return True  # Las matrices son iguales en todos los elementos
+    
 
 class Simplex:
     
@@ -231,9 +208,6 @@ class Simplex:
         self.b = np.array(b)
         self.A = np.array(A)
         self.i = 0
-        
-        if not cjt:
-            print('pl:', c, b, A)
         
         self.nom = f'Cjt{cjt}_Problema{pl}_sortida.txt'
         
@@ -279,7 +253,6 @@ class Simplex:
                 print("Fi simplex primal", file=sortida)
             
             self.solucio()
-            print(self.z)
         
     def no_tenen_valor(self,indexs):
         
