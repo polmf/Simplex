@@ -24,11 +24,9 @@ class Iteracions:
         self.i = i # numero d'iteracions
         self.nom = nom # nom del fitxer de sortida
         
-        self.indexs_nous = self.B.copy()
-        
         self.es_optim()
     
-    def fer_matriu(self, Bases):
+    def fer_matriu(self, Bases): # Funció per a contruir les matrius mB i An
         
         columnes_de_indexs =[]
         for index in Bases:
@@ -37,32 +35,28 @@ class Iteracions:
         
         return np.column_stack(columnes_de_indexs)
     
-    def fer_Cb_Cn(self, Bases):
+    def fer_Cb_Cn(self, Bases): #Funció per a construir  Cb i Cn
         
-        Cx = []  # Inicializamos una matriz fila de ceros
-    
-        for index in Bases:
-            
-            Cx.append(self.c[index-1])  # Asignamos los valores de c en los índices de B a Cb
+        Cx = []  
+        for index in Bases:  
+            Cx.append(self.c[index-1]) 
         
         return Cx
 
     def es_optim(self):
 
-        #self.mB_inv = np.linalg.inv(self.mB) # calculem inversa de la matriu B (dels coeficients en restr. de les var. bàsiques)
         Cb_mB_inv = np.dot(self.Cb, self.mB_inv) # producte escalar entre cb i la inversa calculada
         Cb_mB_inv_An = np.dot(Cb_mB_inv, self.An) # calcul de cb x B^-1 x An
         self.r = self.Cn - Cb_mB_inv_An # calcul final del cost reduït
         
         if self.positius(self.r): # si r és positiu np.all(vector > 0)
-
             return self.optim()
         
         else:
             self.canviar_base(self.r)
 
 
-    def positius(self, r):
+    def positius(self, r): # funció per a veure si tots els elements son positius
 
         for element in r:
             if element < 0:
@@ -93,7 +87,7 @@ class Iteracions:
         self.B[p] = self.entra # actualitzem variables de B
         self.N[q] = self.surt # actualitzem variables de N
 
-        self.N.sort()
+        self.N.sort() # ordenem els indexs de les variables no bàsiques
 
         index_cn = next(i for i in range(len(self.N)) if self.N[i] == self.surt)
 
@@ -102,9 +96,9 @@ class Iteracions:
         else:
             self.Cn[index_cn] = 0
 
-        self.actualitzar(theta, p, rq, q, db)
+        self.actualitzar(theta, p, rq, db)
 
-    def actualitzar(self, theta, p, rq, q, db):
+    def actualitzar(self, theta, p, rq, db):
         
         columna_entra = self.restriccions[:, self.B[p]-1]
         self.mB[:, p]=columna_entra
@@ -141,7 +135,7 @@ class Iteracions:
 
         
         with open(self.nom, 'a', encoding='utf8') as sortida:
-            print(f"Iteració {self.i}: N[q] = {self.surt}, B[p] = {self.entra}, theta*= {round(theta,3)}, z = {round(self.z,3)}", file=sortida)
+            print(f"Iteració {self.i}: N[q] = {self.surt}, B[p] = {self.entra}, theta*= {round(theta,3)}, z = {round(self.z,4)}", file=sortida)
 
         if self.positius(self.Xb):
             
@@ -155,31 +149,27 @@ class Iteracions:
                 self.B = None
                 return None
                 
-            
-
-    def primer_negatiu(self,r):
+    def primer_negatiu(self,r): # Troba l'index del primer element negatiu
 
         for i in range(len(r)):
             if r[i] < 0:
                 return i
         return None
     
-    def trobar_Aq(self, q):
+    def trobar_Aq(self, q): #Troba la columna Aq
 
         Aq = []
-
         for fila in self.An:
             Aq.append(fila[q])
 
         return np.array(Aq)
 
-    def calcular_0_p(self,db):
+    def calcular_0_p(self,db): # Calcula els valors de p i tetha
         
         llista_min = []
         indexs_min = []
         
         for i in range(len(self.b)):
-            
             if db[i]<0:
             
                 llista_min.append(-self.Xb[i]/db[i])
@@ -192,11 +182,11 @@ class Iteracions:
         return minim, p
 
     
-    def base_B_N(self):
+    def base_B_N(self): # Retorna les noves bases i el nombre d'iteracions
                     
         return  self.B, self.N, self.i
         
-    def optim(self):
+    def optim(self): # retorna la base la Xb el costos reduits i la z del resultat optim
         
         return self.B, self.Xb, self.z, self.r, self.i
     
@@ -204,10 +194,10 @@ class Iteracions:
 class Simplex:
     
     def __init__(self, c, b, A, cjt=None, pl=None):
-        self.c = np.array(c)
-        self.b = np.array(b)
-        self.A = np.array(A)
-        self.i = 0
+        self.c = np.array(c) # inicialitzem c
+        self.b = np.array(b) # inicialitzem b
+        self.A = np.array(A) # inicialitzem la matriu A
+        self.i = 0 # inicialitzem el nombre d'iteracions
         
         self.nom = f'Cjt{cjt}_Problema{pl}_sortida.txt'
         
@@ -215,26 +205,26 @@ class Simplex:
             
             print("Inici simplex primal amb regla de Bland", file=sortida)
 
-        self.fase1()
+        self.fase1() # Comencem la fase I
         
     def fase1(self):
         with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Fase I", file=sortida)
             
-        c = [0] * len(self.c) + [1] * len(self.b)
-        A = np.hstack((self.A, np.eye(len(self.b))))
-        B = list(range(len(self.c) + 1, len(c)+1))
-        N = list(range(1,len(self.c)+1))
-        indexs = B.copy()
+        c = [0] * len(self.c) + [1] * len(self.b) # Tornem a construir c amb els nous valors
+        A = np.hstack((self.A, np.eye(len(self.b)))) # Tornem a construir A amb els nous valors
+        B = list(range(len(self.c) + 1, len(c)+1)) # Construim la base amb les variables bàsiques que pertanyen a les variables auxiliars
+        N = list(range(1,len(self.c)+1)) # Construim la base de les variables no bàsques les quals son les variables originals del problema
+        indexs = B.copy() # guardem els indexs de les variables auxiliars
         
-        self.B, self.N, self.i = Iteracions(c, self.b, A, B, N, self.i, self.nom).base_B_N()
+        self.B, self.N, self.i = Iteracions(c, self.b, A, B, N, self.i, self.nom).base_B_N() # Trobem una base factible
  
-        if self.no_tenen_valor(indexs):
+        if self.no_tenen_valor(indexs): # Si les variables auxiliars no tenen valor les eliminem
 
             for _ in range(len(self.B)): 
                 self.N.pop()
 
-            self.fase2()
+            self.fase2() # Comencem la fase II
             
         else:
             with open(self.nom, 'a', encoding='utf8') as sortida:
@@ -244,27 +234,25 @@ class Simplex:
         with open(self.nom, 'a', encoding='utf8') as sortida:
             print("Fase II", file=sortida)
             
-        self.B, self.Xb, self.z, self.r, self.i = Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim()
+        self.B, self.Xb, self.z, self.r, self.i = Iteracions(self.c, self.b, self.A, self.B, self.N, self.i, self.nom).optim() # Trobem la solució optima
         
-        if self.B:
+        if self.B: # Si té solució donem el resultat
             
             with open(self.nom, 'a', encoding='utf8') as sortida:
-                print("\nSolució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,3), file=sortida)
+                print("\nSolució òptima trobada, iteració = ", self.i-1,", z = ", round(self.z,4), file=sortida)
                 print("Fi simplex primal", file=sortida)
             
             self.solucio()
         
-    def no_tenen_valor(self,indexs):
+    def no_tenen_valor(self,indexs): # Mira que les variables auxiliars no tinguin valor
         
-        for valor in indexs:
-            
+        for valor in indexs:         
             if valor in self.B:
-
                 return False
             
         return True
     
-    def solucio(self):
+    def solucio(self): # Escriu la solució en el document de sortida
         
         with open(self.nom, 'a', encoding='utf8') as sortida:
             print("\nSolució òptima: \n", file=sortida)
@@ -274,21 +262,6 @@ class Simplex:
         
             Xb = ' '.join(str(round(numero,2)) for numero in self.Xb)
             print("xb = ", Xb, file=sortida)
-            print("z = ", round(self.z,3), file=sortida)
+            print("z = ", round(self.z,4), file=sortida)
             r = ' '.join(str(round(numero,2)) for numero in self.r)
             print("r = ", r, file=sortida)
-
-
-#Simplex([-1, 0, 0],[4,2],[[1, 1, 1],[2, -1, 0]])
-"""Simplex([-28, -65, -48, -75, 91, 42, -39, -31, 15, 36, -10, -27, -100, -11, 0, 0, 0, 0, 0, 0], [338, 294, 54, 252, 1009, 404, 162, 143, 148, 65],[
-    [-52, -99, 81, 99, 66, 0, -38, 70, 53, 77, -54, 99, 4, 32, 0, 0, 0, 0, 0, 0],
-    [-76, -23, 16, 75, -9, 95, 29, 97, -3, 36, 85, -45, -70, 87, 0, 0, 0, 0, 0, 0],
-    [91, 4, -42, 55, 22, 53, -100, -82, -44, 5, -4, 83, -29, 42, 0, 0, 0, 0, 0, 0],
-    [-26, 64, 90, 76, -6, -21, -56, -40, 58, 35, 31, 88, 25, -66, 0, 0, 0, 0, 0, 0],
-    [69, 69, 84, 90, 57, 61, 80, 71, 78, 82, 66, 61, 77, 63, 1, 0, 0, 0, 0, 0],
-    [92, 33, -14, 83, 9, 78, 66, 20, 14, 55, -96, -51, 17, 99, 0, -1, 0, 0, 0, 0],
-    [-90, 66, -15, 18, -20, -99, 21, 77, 99, 63, -68, -49, 59, 99, 0, 0, 1, 0, 0, 0],
-    [-14, 99, -67, 88, 68, -39, -29, 82, 99, 1, 25, -89, -67, -15, 0, 0, 0, 1, 0, 0],
-    [93, -15, 22, 86, -82, -94, 39, -26, 65, -3, -7, -40, 66, 43, 0, 0, 0, 0, 1, 0],
-    [45, -17, 88, -79, 40, -7, -6, -45, 75, 51, -20, -89, 24, 6, 0, 0, 0, 0, 0, -1]
-])"""
